@@ -1,0 +1,31 @@
+# Welcome to serverless. Read the docs
+# https://serverless.com/framework/docs/
+
+# Serverless.yml is the configuration the CLI
+# uses to deploy your code to your provider of choice
+
+# The `service` block is the name of the service
+service: serverless-s3-static-website
+
+frameworkVersion: '3'
+
+# The `provider` block defines where your service will be deployed
+provider:
+  name: aws
+  region: eu-west-3
+  runtime: nodejs12.x
+  stage: dev
+
+plugins:
+  - serverless-s3-sync
+
+custom:
+  bucketName: ${self:service}-${self:provider.stage}-serverless
+
+  s3Sync:
+    - bucketName: ${self:custom.bucketName}
+      localDir: static
+
+resources:
+  # S3
+  - ${file(serverless-resources/s3-bucket.yml)}
